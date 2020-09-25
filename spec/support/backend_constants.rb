@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Fixture module declarations for backend detection testing
 
 module GirlFriday
@@ -8,7 +10,7 @@ end
 module Delayed
   class Job
     def self.column_names
-      %w(id priority attempts handler queue last_error run_at locked_at failed_at locked_by created_at updated_at)
+      %w[id priority attempts handler queue last_error run_at locked_at failed_at locked_by created_at updated_at]
     end
 
     column_names.each do |column_name|
@@ -37,8 +39,7 @@ module Sidekiq
         opts
       end
 
-      def client_push(item)
-      end
+      def client_push(item); end
     end
   end
 end

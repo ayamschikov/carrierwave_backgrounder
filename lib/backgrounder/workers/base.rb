@@ -1,7 +1,7 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 module CarrierWave
   module Workers
-
     module Base
       attr_accessor :klass, :id, :column, :record
 
@@ -20,23 +20,22 @@ module CarrierWave
 
       def not_found_errors
         [].tap do |errors|
-          errors << ::ActiveRecord::RecordNotFound      if defined?(::ActiveRecord)
+          errors << ::ActiveRecord::RecordNotFound if defined?(::ActiveRecord)
           errors << ::Mongoid::Errors::DocumentNotFound if defined?(::Mongoid)
         end
       end
 
       def set_args(klass, id, column)
-        self.klass, self.id, self.column = klass, id, column
+        self.klass = klass
+        self.id = id
+        self.column = column
       end
 
       def constantized_resource
         klass.is_a?(String) ? klass.constantize : klass
       end
 
-      def when_not_ready
-      end
-
+      def when_not_ready; end
     end # Base
-
   end # Workers
 end # CarrierWave

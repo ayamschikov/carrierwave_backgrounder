@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'backgrounder/workers/base'
 require 'backgrounder/workers/class_methods'
 require 'backgrounder/workers/process_asset_mixin'

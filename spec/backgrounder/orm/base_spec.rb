@@ -1,11 +1,17 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
+require 'spec_helper'
 
 RSpec.describe CarrierWave::Backgrounder::ORM::Base do
   before do
     @mock_class = Class.new do
-      def self.before_save(method, opts); nil; end
-      def self.after_commit(method, opts); nil; end
+      def self.before_save(_method, _opts)
+        nil
+      end
+
+      def self.after_commit(_method, _opts)
+        nil
+      end
     end
 
     @mock_class.extend CarrierWave::Backgrounder::ORM::Base

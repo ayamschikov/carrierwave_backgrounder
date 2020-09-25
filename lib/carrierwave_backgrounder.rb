@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/object'
 require 'backgrounder/support/backends'
 require 'backgrounder/orm/base'
@@ -28,7 +30,6 @@ module CarrierWave
         end
       end
     end
-
   end
 end
 

@@ -1,14 +1,15 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'backgrounder/workers/store_asset'
 
 RSpec.describe CarrierWave::Workers::StoreAsset do
-  let(:fixtures_path) { File.expand_path('../fixtures/images', __FILE__) }
+  let(:fixtures_path) { File.expand_path('fixtures/images', __dir__) }
   let(:worker_class) { CarrierWave::Workers::StoreAsset }
   let(:user) { double('User') }
   let!(:worker) { worker_class.new(user, '22', :image) }
 
-  describe ".perform" do
+  describe '.perform' do
     it 'creates a new instance and calls perform' do
       args = [user, '22', :image]
       expect(worker_class).to receive(:new).with(*args).and_return(worker)
@@ -17,11 +18,11 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
     end
   end
 
-  describe "#perform" do
-    let(:image)  { double('UserAsset') }
+  describe '#perform' do
+    let(:image) { double('UserAsset') }
 
     before do
-      allow(image).to receive(:root).once.and_return(File.expand_path('..', __FILE__))
+      allow(image).to receive(:root).once.and_return(File.expand_path(__dir__))
       allow(image).to receive(:cache_dir).once.and_return('fixtures')
       allow(user).to receive(:image_tmp).twice.and_return('images/test.jpg')
       allow(user).to receive(:find).with('22').once.and_return(user)
@@ -32,7 +33,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
     end
 
     it 'removes tmp directory on success' do
-      expect(FileUtils).to receive(:rm_r).with(fixtures_path, :force => true).once
+      expect(FileUtils).to receive(:rm_r).with(fixtures_path, force: true).once
       expect(user).to receive(:save!).once.and_return(true)
       worker.perform
     end
@@ -62,7 +63,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
     let(:worker) { worker_class.new }
 
     before do
-      allow(image).to receive(:root).once.and_return(File.expand_path('..', __FILE__))
+      allow(image).to receive(:root).once.and_return(File.expand_path(__dir__))
       allow(image).to receive(:cache_dir).once.and_return('fixtures')
       allow(admin).to receive(:avatar_tmp).twice.and_return('images/test.jpg')
       allow(admin).to receive(:find).with('23').once.and_return(admin)
@@ -94,7 +95,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
       it 'sets the cache_path correctly if a full path is set for the cache_dir' do
         root = '/Users/lar/Sites/bunker/public'
         cache_dir = '/Users/lar/Sites/bunker/tmp/uploads'
-        asset = double(:cache_dir => cache_dir, :root => root)
+        asset = double(cache_dir: cache_dir, root: root)
         expect(record).to receive(:image).and_return(asset)
         expect(record).to receive(:image_tmp).and_return('images/test.jpg')
         worker.send :store_directories, record
@@ -104,7 +105,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
       it 'sets the cache_path correctly if a partial path is set for cache_dir' do
         root = '/Users/lar/Sites/bunker/public'
         cache_dir = 'uploads/tmp'
-        asset = double(:cache_dir => cache_dir, :root => root)
+        asset = double(cache_dir: cache_dir, root: root)
         expect(record).to receive(:image).and_return(asset)
         expect(record).to receive(:image_tmp).and_return('images/test.jpg')
         worker.send :store_directories, record
@@ -116,7 +117,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
       it 'sets the tmp_directory correctly if a full path is set for the cache_dir' do
         root = '/Users/lar/Sites/bunker/public'
         cache_dir = '/Users/lar/Sites/bunker/tmp/uploads'
-        asset = double(:cache_dir => cache_dir, :root => root)
+        asset = double(cache_dir: cache_dir, root: root)
         expect(record).to receive(:image).and_return(asset)
         expect(record).to receive(:image_tmp).and_return('images/test.jpg')
         worker.send :store_directories, record
@@ -126,7 +127,7 @@ RSpec.describe CarrierWave::Workers::StoreAsset do
       it 'sets the tmp_directory correctly if a partial path is set for cache_dir' do
         root = '/Users/lar/Sites/bunker/public'
         cache_dir = 'uploads/tmp'
-        asset = double(:cache_dir => cache_dir, :root => root)
+        asset = double(cache_dir: cache_dir, root: root)
         expect(record).to receive(:image).and_return(asset)
         expect(record).to receive(:image_tmp).and_return('images/test.jpg')
         worker.send :store_directories, record
