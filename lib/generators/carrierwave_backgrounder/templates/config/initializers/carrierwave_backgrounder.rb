@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 CarrierWave::Backgrounder.configure do |c|
   c.backend :delayed_job, queue: :carrierwave
   # c.backend :active_job, queue: :carrierwave

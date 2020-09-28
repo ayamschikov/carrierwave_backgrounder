@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 module CarrierWave
   module Backgrounder
     module ORM
-
       module DataMapper
         include CarrierWave::Backgrounder::ORM::Base
 
-        def process_in_background(column, worker=::CarrierWave::Workers::ProcessAsset)
+        def process_in_background(column, worker = ::CarrierWave::Workers::ProcessAsset)
           super
 
-          class_eval  <<-RUBY, __FILE__, __LINE__ + 1
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def set_#{column}_processing
               @#{column}_changed = attribute_dirty?(:#{column})
               self.#{column}_processing = true if respond_to?(:#{column}_processing)
@@ -16,10 +17,10 @@ module CarrierWave
           RUBY
         end
 
-        def store_in_background(column, worker=::CarrierWave::Workers::StoreAsset)
+        def store_in_background(column, worker = ::CarrierWave::Workers::StoreAsset)
           super
 
-          class_eval  <<-RUBY, __FILE__, __LINE__ + 1
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def set_#{column}_changed
               @#{column}_changed = attribute_dirty?(:#{column})
             end
@@ -39,7 +40,7 @@ module CarrierWave
 
           super
 
-          class_eval  <<-RUBY, __FILE__, __LINE__ + 1
+          class_eval <<-RUBY, __FILE__, __LINE__ + 1
             attr_reader :#{column}_changed
 
             def enqueue_#{column}_background_job
@@ -55,9 +56,8 @@ module CarrierWave
           RUBY
         end
       end # DataMapper
-
-    end #ORM
-  end #Backgrounder
-end #CarrierWave
+    end # ORM
+  end # Backgrounder
+end # CarrierWave
 
 DataMapper::Model.append_extensions ::CarrierWave::Backgrounder::ORM::DataMapper

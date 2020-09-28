@@ -1,7 +1,7 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 module CarrierWave
   module Workers
-
     module StoreAssetMixin
       include CarrierWave::Workers::Base
 
@@ -14,15 +14,15 @@ module CarrierWave
       def perform(*args)
         record = super(*args)
 
-        if record && record.send(:"#{column}_tmp")
+        if record&.send(:"#{column}_tmp")
           store_directories(record)
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
-          record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
-          File.open(cache_path) { |f| record.send :"#{column}=", f }
-          if record.save!
-            FileUtils.rm_r(tmp_directory, :force => true)
+          if record.respond_to?(:"#{column}_processing")
+            record.send :"#{column}_processing=", false
           end
+          File.open(cache_path) { |f| record.send :"#{column}=", f }
+          FileUtils.rm_r(tmp_directory, force: true) if record.save!
         else
           when_not_ready
         end
@@ -31,13 +31,12 @@ module CarrierWave
       private
 
       def store_directories(record)
-        asset, asset_tmp = record.send(:"#{column}"), record.send(:"#{column}_tmp")
-        cache_directory  = File.expand_path(asset.cache_dir, asset.root)
-        @cache_path      = File.join(cache_directory, asset_tmp)
-        @tmp_directory   = File.join(cache_directory, asset_tmp.split("/").first)
+        asset = record.send(:"#{column}")
+        asset_tmp = record.send(:"#{column}_tmp")
+        cache_directory = File.expand_path(asset.cache_dir, asset.root)
+        @cache_path = File.join(cache_directory, asset_tmp)
+        @tmp_directory = File.join(cache_directory, asset_tmp.split('/').first)
       end
-
     end # StoreAssetMixin
-
   end # Workers
 end # Backgrounder
